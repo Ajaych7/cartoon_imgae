@@ -1,0 +1,26 @@
+# Install dependencies first:
+# pip install torch torchvision opencv-python numpy
+
+import torch
+from torchvision.transforms.functional import to_tensor, to_pil_image
+from PIL import Image
+
+def dl_cartoonify(img_path, model_path="cartoongan.pth"):
+    # Load pre-trained CartoonGAN model (simplified example)
+    net = torch.load(model_path, map_location="cpu")
+    net.eval()
+    
+    # Preprocess image
+    img = Image.open(img_path).convert("RGB")
+    img_tensor = to_tensor(img).unsqueeze(0)
+    
+    # Forward pass
+    with torch.no_grad():
+        cartoon_tensor = net(img_tensor)
+    
+    # Save result
+    cartoon_img = to_pil_image(cartoon_tensor.squeeze())
+    cartoon_img.save("dl_cartoon.jpg")
+    return cartoon_img
+
+# dl_cartoonify("input.jpg")  # Requires downloaded model
